@@ -21,6 +21,8 @@ var lifts=
         }
     ];
 
+
+
 class WorkoutCreate extends Component {
 
 
@@ -46,7 +48,7 @@ class WorkoutCreate extends Component {
                 </CardSection>
 
                 <CardSection>
-                    <Button>Add Lift</Button>
+                    <Button>Save Workout</Button>
                 </CardSection>
             </Card>
         );

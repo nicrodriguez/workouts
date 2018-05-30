@@ -6,7 +6,7 @@ const LiftList = (lifts) => {
       <View>
           {
               lifts.map((item, index) => (
-                  <View style={styles.containerStyle}>
+                  <View key={index} style={styles.containerStyle}>
                       <Text style={styles.textStyle}>
                           {item.name + " " + item.sets + "x" + item.reps}
                       </Text>
