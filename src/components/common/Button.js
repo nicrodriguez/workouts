@@ -40,7 +40,11 @@ const styles = {
     buttonStyle: {
         flex: 1,
         alignSelf: 'stretch',
-        backgroundColor: '#4b5045'
+        backgroundColor: '#4b5045',
+        paddingLeft: 5,
+        paddingRight: 5,
+        borderWidth: 1,
+        borderColor: '#f9f9f9'
     },
     bottomButtonStyle: {
         flex: 1,

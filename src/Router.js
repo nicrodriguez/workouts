@@ -24,7 +24,7 @@ const RouterComponent = () => {
                   <Scene
                       key="workoutList"
                       component={Main}
-                      onRight={() => Actions.workoutCreate()}
+                      onRight={() => Actions.workoutCreateForm()}
                       rightTitle="Add Workout"
                       title="Past Workouts"
                       onLeft={() => logOutUser()}
@@ -32,7 +32,7 @@ const RouterComponent = () => {
                       initial
                   />
 
-                  <Scene key="workoutCreate" component={WorkoutCreate} title="Create Workout"/>
+                  <Scene key="workoutCreateForm" component={WorkoutCreate} title="Create Workout"/>
               </Scene>
           </Scene>
       </Router>
