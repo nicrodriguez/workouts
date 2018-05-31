@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {FlatList, Text, View} from 'react-native';
-import { workoutUpdate, workoutCreate } from "../actions";
+import {FlatList, Image, Modal, Text, View} from 'react-native';
+import { workoutChanged, dateChanged, liftChanged, workoutUpdate, workoutCreate } from "../actions";
 
-import {Button, CardSection, Input} from "./common";
-
+import {Button, CardSection, CardSectionBottom, CardSectionTop, Input} from "./common";
 
 
 
@@ -12,42 +11,108 @@ import {Button, CardSection, Input} from "./common";
 
 class WorkoutCreate extends Component {
 
+    state = {
+        newLift: false,
+        key: '',
+        sets: '',
+        reps: ''
+
+    };
+
+    liftList = [];
+
     componentWillMount() {
 
     }
-    onSavePress() {
-        const lift=
-            [
-                {
-                    id: 0,
-                    key: 'Bench Press',
-                    sets: '4',
-                    reps: '10'
-                },
-                {
-                    id: 1,
-                    key: 'Incline DB Press',
-                    sets: '4',
-                    reps: '8'
-                },
-                {
-                    id: 2,
-                    key: 'DB Flys',
-                    sets: '4',
-                    reps: '10'
-                },
-                {
-                    id: 3,
-                    key: 'Close-Grip Bench Press',
-                    sets: '4',
-                    reps: '8'
-                }
-            ];
-        this.props.workoutUpdate({ prop: 'lifts', lift});
-        const { workout, date, lifts } = this.props;
-        this.props.workoutCreate({ workout, date, lifts });
+    onWorkoutChanged(text) {
+        this.props.workoutChanged(text);
     }
 
+    onDateChanged(text) {
+        this.props.dateChanged(text);
+    }
+
+    onLiftCreated({key, sets, reps }) {
+        this.liftList.push({key, sets, reps });
+        this.props.liftChanged(this.liftList);
+        console.log(this.props.lifts);
+    }
+
+    onSavePress() {
+
+
+        const { workout, date, lifts } = this.props;
+
+        this.props.workoutCreate({ workout, date, lifts });
+        console.log(this.props.lifts);
+    }
+
+    onConfirmPressed() {
+        const { key, sets, reps } = this.state;
+        this.onLiftCreated({ key, sets, reps });
+        this.setState({
+            newLift: false,
+            key: '',
+            sets: '',
+            reps: ''
+        });
+
+    }
+
+    renderNewLiftForm(visible) {
+
+
+        return(
+            <Modal
+                visible={visible}
+                transparent
+                animationType='slide'
+                onRequestClose={() => {}}
+            >
+                <View style={{
+                    backgroundColor: 'rgba(0,0,0,0.75)',
+                    position: 'relative',
+                    flex: 1,
+                    justifyContent: 'center'
+                }}>
+                    <CardSectionTop>
+                        <Input
+                            label="Lift"
+                            placeholder="lift name"
+                            value={this.state.key}
+                            onChangeText={key => this.setState({ key })}
+                        />
+                    </CardSectionTop>
+
+                    <CardSection>
+                        <Input
+                            label="Sets"
+                            placeholder="# of sets"
+                            value={this.state.sets}
+                            onChangeText={sets => this.setState({ sets })}
+                        />
+                    </CardSection>
+
+                    <CardSection>
+                        <Input
+                            label="Reps"
+                            placeholder="# of reps"
+                            value={this.state.reps}
+                            onChangeText={reps => this.setState({ reps })}
+                        />
+                    </CardSection>
+
+                    <CardSectionBottom>
+                        <View style={styles.buttonBar}>
+                            <Button onPress={() => {this.setState({ newLift: false})}}>Cancel</Button>
+                            <Button onPress={() => {this.onConfirmPressed()}}>Confirm</Button>
+                        </View>
+                    </CardSectionBottom>
+
+                </View>
+            </Modal>
+        );
+    }
 
     render() {
         const { workout, date, lifts } = this.props;
@@ -58,7 +123,7 @@ class WorkoutCreate extends Component {
                         label="Workout"
                         placeholder="workout name"
                         value={workout}
-                        onChangeText={value => this.props.workoutUpdate({ prop: 'workout', value})}
+                        onChangeText={this.onWorkoutChanged.bind(this)}
                     />
                 </CardSection>
 
@@ -67,13 +132,13 @@ class WorkoutCreate extends Component {
                         label="Date"
                         placeholder="mm/dd/yyyy"
                         value={date}
-                        onChangeText={value => this.props.workoutUpdate({ prop: 'date', value })}
+                        onChangeText={this.onDateChanged.bind(this)}
                     />
                 </CardSection>
 
                 <CardSection>
                     <View style={styles.buttonBar}>
-                        <Button>Add Lift</Button>
+                        <Button onPress={() => {this.setState({ newLift: true })} }>Add Lift</Button>
                         <Button>Delete Lift</Button>
                     </View>
                 </CardSection>
@@ -84,17 +149,19 @@ class WorkoutCreate extends Component {
                         data={lifts}
                         renderItem={({item}) =>
                             <CardSection>
-                                <Text style={[styles.textItem, { flex: 3}]}>{item.key}</Text>
-                                <Text style={[styles.textItem, { flex: 1}]}>{item.sets}x{item.reps}</Text>
+                                <Text style={[styles.textItem, { flex: 12}]}>{item.key}</Text>
+                                <Text style={[styles.textItem, { flex: 4}]}>{item.sets}x{item.reps}</Text>
+                                <Image style={{ flex: 1 }} source={require('../images/delete.png')} />
                             </CardSection>
                         }
                     />
                 </CardSection>
 
+                {this.renderNewLiftForm(this.state.newLift)}
 
                 <View style={styles.bottomButton}>
                     <Button
-                        onPress={this.onSavePress()}
+                        onPress={this.onSavePress.bind(this)}
                     >Save Workout</Button>
                 </View>
             </View>
@@ -135,4 +202,4 @@ const mapStateToProps = (state) => {
     return { workout, date, lifts }
 };
 
-export default connect(mapStateToProps, {workoutUpdate, workoutCreate })(WorkoutCreate);
+export default connect(mapStateToProps, { workoutChanged, dateChanged, liftChanged, workoutUpdate, workoutCreate })(WorkoutCreate);

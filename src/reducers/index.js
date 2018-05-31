@@ -4,5 +4,5 @@ import NewWorkoutFormReducer from './NewWorkoutFormReducer';
 
 export default combineReducers({
     auth: AuthReducer,
-    newWorkoutReducer: NewWorkoutFormReducer
+    newWorkoutReducer: NewWorkoutFormReducer,
 });

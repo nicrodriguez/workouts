@@ -1,9 +1,35 @@
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
 import {
+    WORKOUT_CHANGED,
+    DATE_CHANGED,
+    LIFT_CHANGED,
     WORKOUT_UPDATE,
     WORKOUT_CREATE
 } from './types';
+
+export const workoutChanged = (text) => {
+    text = text.replace("/", "_");
+    return {
+        type: WORKOUT_CHANGED,
+        payload: text
+    };
+};
+
+export const dateChanged = (text) => {
+    text = text.replace("/", "_");
+    return {
+        type: DATE_CHANGED,
+        payload: text
+    };
+};
+
+export const liftChanged = (lifts) => {
+    return {
+      type: LIFT_CHANGED,
+      payload: lifts
+    };
+};
 
 export const workoutUpdate = ({ prop, value }) => {
     return {
@@ -25,9 +51,8 @@ export const workoutCreate = ({ workout, date, lifts }) => {
                     .push({key, sets, reps})
                     .then(() => {
                         dispatch({type: WORKOUT_CREATE});
-                        Actions.pop();
+                        Actions.main();
                     });
-
             }
         }
     }
